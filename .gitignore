@@ -1,0 +1,7 @@
+.bloop/*
+.idea/*
+.metals/*
+target/*
+project/project/target/config-classes/*
+project/target/config-classes/*
+.DS_Store
