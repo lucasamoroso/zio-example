@@ -3,5 +3,5 @@
 .metals/*
 target/*
 project/project/target/config-classes/*
-project/target/config-classes/*
+project/target/*
 .DS_Store
