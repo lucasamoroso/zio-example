@@ -5,3 +5,4 @@ addSbtPlugin("net.virtual-void"          % "sbt-dependency-graph" % "0.10.0-RC1"
 addSbtPlugin("ch.epfl.scala"             % "sbt-scalafix"         % "0.9.16")
 addSbtPlugin("com.typesafe.sbt"         %% "sbt-native-packager"  % "1.7.2")
 addSbtPlugin("ch.epfl.scala"             % "sbt-bloop"            % "1.4.1")
+addSbtPlugin("io.spray"                  % "sbt-revolver"         % "0.9.1")

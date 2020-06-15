@@ -5,9 +5,9 @@ import com.lamoroso.example.services.health.HealthCheck
 import com.lamoroso.example.http.routes.HealthCheckRoutes
 import org.http4s.HttpApp
 import zio.Task
-
 import zio.interop.catz._
 import zio.interop.catz.implicits._
+
 import org.http4s.HttpApp
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -18,12 +18,17 @@ import com.lamoroso.example.AppEnv
 import zio.clock.Clock
 import zio._
 import zio.logging.Logging
+import com.lamoroso.example.http.routes.UsersRoutes
+import com.lamoroso.example.`package`.UserServiceEnv
+
+import cats.implicits._
 
 object Server {
-  private val appRoutes: URIO[HealthCheck with Logging, HttpApp[Task]] =
+  private val appRoutes: URIO[UserServiceEnv with HealthCheck with Logging, HttpApp[Task]] =
     for {
+      userRoutes        <- UsersRoutes.routes
       healthCheckRoutes <- HealthCheckRoutes.routes
-    } yield (healthCheckRoutes).orNotFound
+    } yield (userRoutes <+> healthCheckRoutes).orNotFound
 
   val runServer: ZIO[AppEnv, Throwable, Unit] = {
 
