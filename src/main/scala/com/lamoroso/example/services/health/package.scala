@@ -6,6 +6,7 @@ import zio.{ ULayer, ZLayer }
 import zio.Task
 import com.lamoroso.example.services.health._
 import zio.ZIO
+import zio.logging._
 
 package object health {
 
@@ -13,16 +14,20 @@ package object health {
 
   object HealthCheck {
     trait Service {
-      def healthStatus(): Task[Health]
+      def healthStatus(): ZIO[Logging, Throwable, Health]
     }
 
     val live: ULayer[HealthCheck] = ZLayer.succeed({
       new Service {
-        override def healthStatus(): Task[Health] = Task(Health.Healthy)
+        override def healthStatus(): ZIO[Logging, Throwable, Health] =
+          for {
+            _      <- log.info("Checking if healty ...")
+            status <- Task(Health.Healthy)
+          } yield (status)
       }
     })
 
     //Accessors
-    val healthStatus: RIO[HealthCheck, Health] = RIO.accessM(_.get.healthStatus())
+    val healthStatus: ZIO[HealthCheck with Logging, Throwable, Health] = RIO.accessM(_.get.healthStatus())
   }
 }

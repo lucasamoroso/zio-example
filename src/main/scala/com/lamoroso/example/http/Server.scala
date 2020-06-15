@@ -17,9 +17,10 @@ import com.lamoroso.example.AppEnv
 
 import zio.clock.Clock
 import zio._
+import zio.logging.Logging
 
 object Server {
-  private val appRoutes: URIO[HealthCheck, HttpApp[Task]] =
+  private val appRoutes: URIO[HealthCheck with Logging, HttpApp[Task]] =
     for {
       healthCheckRoutes <- HealthCheckRoutes.routes
     } yield (healthCheckRoutes).orNotFound

@@ -11,6 +11,7 @@ import com.lamoroso.example.config._
 import zio.blocking.Blocking
 import zio.logging.log
 import zio.{ App, ExitCode, ZEnv, ZIO }
+
 object Main extends App {
 
   val logger = Logger.live
