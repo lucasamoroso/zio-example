@@ -19,7 +19,6 @@ import zio._
 import zio.interop.catz._
 import zio.logging.Logging
 
-
 object HealthCheckRoutes {
   private val healthCheck: ZIO[HealthCheck with Logging, String, String] =
     HealthCheck.healthStatus.orElseFail("Internal failure.").flatMap {
@@ -34,8 +33,7 @@ object HealthCheckRoutes {
   private val aliveRoute: URIO[HealthCheck with Logging, HttpRoutes[Task]] =
     aliveEndpoint.toRoutesR(_ => healthCheck)
 
-
   val routes: URIO[HealthCheck with Logging, HttpRoutes[Task]] = for {
     aliveRoute <- aliveRoute
-  } yield aliveRoute 
+  } yield aliveRoute
 }

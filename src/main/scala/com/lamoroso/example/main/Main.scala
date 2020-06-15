@@ -17,13 +17,11 @@ object Main extends App {
   val logger = Logger.live
   val config = logger >>> Config.live
 
-  val appLayers  = logger ++ config ++ HealthCheck.live
-  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] ={
-  Server.runServer
+  val appLayers = logger ++ config ++ HealthCheck.live
+  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] =
+    Server.runServer
       .tapError(err => log.error(s"Execution failed with: $err"))
       .provideCustomLayer(appLayers)
       .exitCode
-  }
-  
 
 }
