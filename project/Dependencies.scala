@@ -43,7 +43,8 @@ object Dependencies {
     val circe            = "com.softwaremill.sttp.tapir" %% "tapir-json-circe"         % version
     val swagger          = "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-http4s"  % version
 
-    val all: Seq[ModuleID] = Seq(core, docs, openApiCirce, openApiCirceYaml, sttp, http4s, zio, zioHttp4sServer, circe, swagger)
+    val all: Seq[ModuleID] =
+      Seq(core, docs, openApiCirce, openApiCirceYaml, sttp, http4s, zio, zioHttp4sServer, circe, swagger)
   }
 
   object STTP {

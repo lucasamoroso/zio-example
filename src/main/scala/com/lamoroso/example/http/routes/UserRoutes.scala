@@ -1,11 +1,9 @@
 package com.lamoroso.example.http.routes
 
 import sttp.tapir.ztapir.{ ZEndpoint, endpoint, statusMapping, _ }
-import cats.implicits._
 
 import org.http4s.HttpRoutes
 import sttp.model.StatusCode
-import sttp.tapir.docs.openapi._
 import sttp.tapir.json.circe._
 import sttp.tapir.server.http4s.ztapir._
 import zio.interop.catz._
@@ -13,7 +11,6 @@ import com.lamoroso.example.model.User
 import com.lamoroso.example.http.ClientError._
 import com.lamoroso.example.http.ClientError
 import com.lamoroso.example.services.user.UserService
-import com.lamoroso.example.services.user.UserService._
 import zio.URIO
 import zio.Task
 import com.lamoroso.example.`package`._

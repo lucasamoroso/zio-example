@@ -3,7 +3,6 @@ package com.lamoroso.example.http
 import zio.URIO
 import com.lamoroso.example.services.health.HealthCheck
 import com.lamoroso.example.http.routes.HealthCheckRoutes
-import org.http4s.HttpApp
 import zio.Task
 import zio.interop.catz._
 import zio.interop.catz.implicits._
@@ -18,17 +17,14 @@ import com.lamoroso.example.AppEnv
 import zio.clock.Clock
 import zio._
 import zio.logging.Logging
-import com.lamoroso.example.http.routes.UsersRoutes
 import com.lamoroso.example.`package`.UserServiceEnv
-
-import cats.implicits._
 
 object Server {
   private val appRoutes: URIO[UserServiceEnv with HealthCheck with Logging, HttpApp[Task]] =
     for {
-      userRoutes        <- UsersRoutes.routes
+      //   userRoutes        <- UsersRoutes.routes
       healthCheckRoutes <- HealthCheckRoutes.routes
-    } yield (userRoutes <+> healthCheckRoutes).orNotFound
+    } yield (healthCheckRoutes).orNotFound
 
   val runServer: ZIO[AppEnv, Throwable, Unit] = {
 

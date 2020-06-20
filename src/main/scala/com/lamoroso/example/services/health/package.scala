@@ -4,7 +4,6 @@ import zio.RIO
 import zio.Has
 import zio.{ ULayer, ZLayer }
 import zio.Task
-import com.lamoroso.example.services.health._
 import zio.ZIO
 import zio.logging._
 

@@ -6,15 +6,13 @@ import com.typesafe.sbt.packager.universal.UniversalPlugin
 import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
 
 val alias: Seq[sbt.Def.Setting[_]] =
-  addCommandAlias(
-    "build",
-    "all test scalafmtCheck packagedArtifacts publish docker:stage"
-  ) ++ addCommandAlias("integrationTest", "it:test") ++
-      addCommandAlias("prepare", "fmt; fix") ++
-      addCommandAlias("fix", "all compile:scalafix test:scalafix") ++
-      addCommandAlias("fixCheck", "; compile:scalafix --check ; test:scalafix --check") ++
-      addCommandAlias("fmt", "all scalafmtSbt scalafmtAll") ++
-      addCommandAlias("fmtCheck", "all scalafmtSbtCheck scalafmtCheckAll")
+  addCommandAlias("build", "prepare; testJVM") ++ addCommandAlias("prepare", "fix; fmt") ++ addCommandAlias(
+    "fix",
+    "all compile:scalafix test:scalafix"
+  ) ++ addCommandAlias("fixCheck", "; compile:scalafix --check ; test:scalafix --check") ++ addCommandAlias(
+    "fmt",
+    "all root/scalafmtSbt root/scalafmtAll"
+  ) ++ addCommandAlias("fmtCheck", "all root/scalafmtSbtCheck root/scalafmtCheckAll")
 
 lazy val zioExample = project
   .in(file("."))
@@ -22,10 +20,8 @@ lazy val zioExample = project
   .settings(Compile / mainClass := Some("com.lamoroso.example.main.Main"))
   .settings(alias)
   .settings(Defaults.itSettings)
-  .configs(IntegrationTest extend Test)
   .enablePlugins(UniversalPlugin)
   .enablePlugins(JavaAppPackaging)
-  .enablePlugins(DockerPlugin)
 
 lazy val thisBuildSettings = inThisBuild(
   Seq(
@@ -38,32 +34,37 @@ lazy val thisBuildSettings = inThisBuild(
     publish / skip := true,
     Compile / doc / sources := Seq.empty,
     Compile / doc / javaOptions := Seq.empty,
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
-    IntegrationTest / parallelExecution := false,
     packageOptions := Seq(
-          ManifestAttributes(
-            ("Implementation-Version", (ThisProject / version).value)
-          )
-        ),
+      ManifestAttributes(
+        ("Implementation-Version", (ThisProject / version).value)
+      )
+    ),
     libraryDependencies ++= dependencies ++ plugins,
-    scalacOptions += "-Ymacro-annotations"
+    scalacOptions ++= List(
+      "-Yrangepos",
+      "-P:semanticdb:synthetics:on"
+    )
+
+    // scalacOptions ++= Seq("-Ymacro-annotations", "-Wunused:imports", "-Yrangepos"),
+    // semanticdbEnabled := true,                       // enable SemanticDB
+    // semanticdbVersion := scalafixSemanticdb.revision // use Scalafix compatible version
   )
 )
 
 lazy val dependencies =
   Cats.all ++
-      Http4s.all ++
-      Config.all ++
-      Streaming.all ++
-      ZIO.all ++
-      Tapir.all ++
-      Doobie.all ++
-      Enum.all ++
-      STTP.all ++
-      Circe.all ++
-      Logging.all ++
-      Flyway.all ++
-      Testing.all
+    Http4s.all ++
+    Config.all ++
+    Streaming.all ++
+    ZIO.all ++
+    Tapir.all ++
+    Doobie.all ++
+    Enum.all ++
+    STTP.all ++
+    Circe.all ++
+    Logging.all ++
+    Flyway.all ++
+    Testing.all
 
 lazy val plugins = Seq(
   compilerPlugin("org.typelevel" %% "kind-projector"     % "0.11.0" cross CrossVersion.full),
@@ -72,7 +73,4 @@ lazy val plugins = Seq(
   compilerPlugin(scalafixSemanticdb)
 )
 
-ThisBuild / scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.5.0"
-
-packageName in Docker := "zio-cats-backend"
-version in Docker := "integration-test"
+scalafixDependencies in ThisBuild += "com.nequissimus" %% "sort-imports" % "0.5.0"

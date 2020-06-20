@@ -7,7 +7,6 @@ import com.lamoroso.example.services.Health.Healthy
 import com.lamoroso.example.services.Health.Unhealthy
 import com.lamoroso.example.services.Health.ShuttingDown
 import zio.IO
-import cats.implicits._
 
 import org.http4s.HttpRoutes
 import sttp.tapir.json.circe._
@@ -15,7 +14,6 @@ import sttp.tapir.server.http4s.ztapir._
 import sttp.tapir.ztapir._
 import zio.URIO
 import zio.Task
-import zio._
 import zio.interop.catz._
 import zio.logging.Logging
 
