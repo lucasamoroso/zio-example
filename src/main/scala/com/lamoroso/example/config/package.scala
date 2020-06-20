@@ -10,7 +10,7 @@ import zio.logging.{ log, Logging }
 import zio.{ Task, _ }
 
 package object config {
-  type Config = Has[HttpServerConfig]
+  type Config = Has[HttpServerConfig] with Has[DbConfig]
 
   object Config {
 
@@ -36,11 +36,12 @@ package object config {
     val live: ZLayer[Logging, Throwable, Config] = ZLayer.fromEffectMany(
       Task
         .effect(source.loadOrThrow[Configuration])
-        .map(c => Has(c.httpServer))
+        .map(c => Has(c.httpServer) ++ Has(c.db))
         .tapError(logEnv)
     )
 
     val httpServerConfig: URIO[Has[HttpServerConfig], HttpServerConfig] = ZIO.service
+    val dbConfig: URIO[Has[DbConfig], DbConfig]                         = ZIO.service
 
   }
 }
